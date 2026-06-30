@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,9 +18,30 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/categories}">Danh mục</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/products}">Sản phẩm</a></li>
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" th:href="@{/login}">Đăng nhập</a></li>
+            <ul class="navbar-nav align-items-lg-center">
                 <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Giỏ hàng</a></li>
+
+                <!-- Khi CHƯA đăng nhập: hiện nút Đăng nhập -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
+                </li>
+
+                <!-- Khi ĐÃ đăng nhập: hiện avatar + tên + đăng xuất -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <img th:src="@{'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=0d6efd&color=fff&rounded=true'}"
+                             alt="avatar" width="32" height="32" class="rounded-circle me-2">
+                        <span sec:authentication="name">Tên user</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-2">
+                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
@@ -29,31 +50,44 @@
 <!-- ===== BANNER ===== -->
 <div class="bg-primary text-white text-center py-5">
     <div class="container">
-        <h1 class="display-5">OracleTaobao</h1>
+        <h1 class="display-5">Golia E-Commerce</h1>
         <p class="lead">Mua sắm sản phẩm theo danh mục với giá tốt nhất.</p>
     </div>
 </div>
 
-<!-- ===== KHU VỰC: Danh mục nổi bật (placeholder) ===== -->
+<!-- ===== KHU VỰC: Danh mục nổi bật ===== -->
 <div class="container my-5">
     <h2 class="mb-4">Danh mục nổi bật</h2>
     <div class="row">
-        <div class="col-12">
-            <div class="alert alert-secondary">
-                Khu vực này sẽ hiển thị danh sách danh mục (làm sau khi có dữ liệu).
-            </div>
+        <div class="col-md-3 mb-3" th:each="category : ${categories}">
+            <a th:href="@{/products/category/{id}(id=${category.id})}"
+               class="btn btn-outline-primary w-100 py-3"
+               th:text="${category.name}">Tên danh mục</a>
+        </div>
+        <div class="col-12" th:if="${categories.isEmpty()}">
+            <div class="alert alert-secondary">Chưa có danh mục nào.</div>
         </div>
     </div>
 </div>
 
-<!-- ===== KHU VỰC: Sản phẩm nổi bật (placeholder) ===== -->
+<!-- ===== KHU VỰC: Sản phẩm nổi bật ===== -->
 <div class="container my-5">
     <h2 class="mb-4">Sản phẩm nổi bật</h2>
     <div class="row">
-        <div class="col-12">
-            <div class="alert alert-secondary">
-                Khu vực này sẽ hiển thị các sản phẩm nổi bật (làm sau khi có entity Product).
+        <div class="col-md-3 mb-4" th:each="product : ${products}">
+            <div class="card h-100">
+                <img th:src="${product.imageUrl}" class="card-img-top" alt="Ảnh"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.name}"></h5>
+                    <p class="card-text text-danger"
+                       th:text="${#numbers.formatInteger(product.price, 0, 'POINT')} + ' đ'"></p>
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-primary">Xem chi tiết</a>
+                </div>
             </div>
+        </div>
+        <div class="col-12" th:if="${products.isEmpty()}">
+            <div class="alert alert-secondary">Chưa có sản phẩm nào.</div>
         </div>
     </div>
 </div>
@@ -64,6 +98,9 @@
         <p class="mb-0">© 2026 Mini E-commerce - HSF302 Group Project</p>
     </div>
 </footer>
+
+<!-- Bootstrap JS: cần cho dropdown menu hoạt động -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

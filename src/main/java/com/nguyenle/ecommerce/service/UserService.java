@@ -17,10 +17,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public void register(User user) {
-        // Mã hoá mật khẩu trước khi lưu
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // Gán vai trò mặc định là CUSTOMER
         Role customerRole = roleRepository.findByName("CUSTOMER")
                 .orElseThrow(() -> new RuntimeException("Chưa có role CUSTOMER trong DB"));
         user.setRole(customerRole);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Danh sách danh mục</h1>
-        <a th:href="@{/categories/new}" class="btn btn-primary">+ Thêm danh mục</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/categories/new}" class="btn btn-primary">+ Thêm danh mục</a>
     </div>
 
     <table class="table table-striped table-bordered align-middle">
@@ -25,7 +25,7 @@
         <tr>
             <th>ID</th>
             <th>Tên danh mục</th>
-            <th>Thao tác</th>
+            <th sec:authorize="hasRole('ADMIN')">Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -34,7 +34,7 @@
             <td>
                 <a th:href="@{/products/category/{id}(id=${category.id})}" th:text="${category.name}"></a>
             </td>
-            <td>
+            <td sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-sm btn-warning">Sửa</a>
                 <a th:href="@{/categories/delete/{id}(id=${category.id})}" class="btn btn-sm btn-danger"
                    onclick="return confirm('Bạn chắc chắn muốn xoá?')">Xoá</a>
