@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +24,19 @@ public class ProductController {
     @GetMapping("/products")
     public String listProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
+        return "products";
+    }
+
+    @GetMapping("/products/search")
+    public String searchProducts(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            Model model) {
+        model.addAttribute("products", productService.searchProducts(keyword, minPrice, maxPrice));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
         return "products";
     }
 
