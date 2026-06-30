@@ -30,13 +30,28 @@ public class ProductController {
     @GetMapping("/products/search")
     public String searchProducts(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) String priceRange,
             Model model) {
+
+        BigDecimal minPrice = null;
+        BigDecimal maxPrice = null;
+
+        if (priceRange != null) {
+            switch (priceRange) {
+                case "under50"    -> { minPrice = BigDecimal.ZERO;            maxPrice = new BigDecimal("50000"); }
+                case "50to100"    -> { minPrice = new BigDecimal("50000");    maxPrice = new BigDecimal("100000"); }
+                case "100to200"   -> { minPrice = new BigDecimal("100000");   maxPrice = new BigDecimal("200000"); }
+                case "200to500"   -> { minPrice = new BigDecimal("200000");   maxPrice = new BigDecimal("500000"); }
+                case "500to1m"    -> { minPrice = new BigDecimal("500000");   maxPrice = new BigDecimal("1000000"); }
+                case "1mto2m"     -> { minPrice = new BigDecimal("1000000");  maxPrice = new BigDecimal("2000000"); }
+                case "2mto5m"     -> { minPrice = new BigDecimal("2000000");  maxPrice = new BigDecimal("5000000"); }
+                case "over5m"     -> { minPrice = new BigDecimal("5000000");  maxPrice = new BigDecimal("999999999999"); }
+            }
+        }
+
         model.addAttribute("products", productService.searchProducts(keyword, minPrice, maxPrice));
         model.addAttribute("keyword", keyword);
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("priceRange", priceRange);
         return "products";
     }
 

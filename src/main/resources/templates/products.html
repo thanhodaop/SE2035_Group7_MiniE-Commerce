@@ -20,25 +20,30 @@
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/products/new}" class="btn btn-primary">+ Thêm sản phẩm</a>
     </div>
 
-    <!-- Thanh tìm kiếm + lọc giá -->
+    <!-- Tìm theo tên + lọc khoảng giá (dùng 1 trong 2 hoặc cả 2) -->
     <form th:action="@{/products/search}" method="get" class="row g-2 mb-4">
         <div class="col-md-5">
             <input type="text" name="keyword" class="form-control"
                    placeholder="Tìm theo tên sản phẩm..." th:value="${keyword}">
         </div>
-        <div class="col-md-2">
-            <input type="number" name="minPrice" class="form-control"
-                   placeholder="Giá từ" th:value="${minPrice}">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="maxPrice" class="form-control"
-                   placeholder="Giá đến" th:value="${maxPrice}">
+        <div class="col-md-3">
+            <select name="priceRange" class="form-select">
+                <option value="">Tất cả giá</option>
+                <option value="under50"  th:selected="${priceRange == 'under50'}">Dưới 50.000 đ</option>
+                <option value="50to100"  th:selected="${priceRange == '50to100'}">50.000 đ - 100.000 đ</option>
+                <option value="100to200" th:selected="${priceRange == '100to200'}">100.000 đ - 200.000 đ</option>
+                <option value="200to500" th:selected="${priceRange == '200to500'}">200.000 đ - 500.000 đ</option>
+                <option value="500to1m"  th:selected="${priceRange == '500to1m'}">500.000 đ - 1.000.000 đ</option>
+                <option value="1mto2m"   th:selected="${priceRange == '1mto2m'}">1.000.000 đ - 2.000.000 đ</option>
+                <option value="2mto5m"   th:selected="${priceRange == '2mto5m'}">2.000.000 đ - 5.000.000 đ</option>
+                <option value="over5m"   th:selected="${priceRange == 'over5m'}">Trên 5.000.000 đ</option>
+            </select>
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
         </div>
-        <div class="col-md-1">
-            <a th:href="@{/products}" class="btn btn-outline-secondary w-100">Xoá</a>
+        <div class="col-md-2">
+            <a th:href="@{/products}" class="btn btn-outline-secondary w-100">Xoá lọc</a>
         </div>
     </form>
 
